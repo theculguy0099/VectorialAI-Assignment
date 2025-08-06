@@ -20,7 +20,7 @@ This project implements a sophisticated multi-agent conversational AI system fea
 - **🧑‍⚖️ Moderator Agent**: A moderator reviews all agent responses and memory, summarizes, and resolves conflicts
 - **📈 Frontend Visualization**: Shared memory and moderator output are visualized in the chat interface
 
-## 🚀 Creative Extensions (Phase 4)
+## 🚀 Creative Extensions
 
 ### Collaborative Shared Memory
 - All agents can read from and write to a shared memory (a dict in the state).
