@@ -91,7 +91,6 @@ python backend/api.py
 - **Persona Discovery Notebook:** See [notebooks/persona_discovery.ipynb](notebooks/persona_discovery.ipynb) for full data analysis and persona clustering.
 - **Demo Conversation:** See [demo_conversation.md](demo_conversation.md) for a sample multi-agent collaborative session.
 - **Demo Scripts:** Try [demo.py](demo.py) or [demo_phase2.py](demo_phase2.py) for scripted runs.
-- **(Optional)** If you have a video/gif demo, add a link or embed here.
 
 ## 🧪 Testing
 - All tests pass with `MOCK_LLM=true` (no OpenAI API needed for development/CI)
