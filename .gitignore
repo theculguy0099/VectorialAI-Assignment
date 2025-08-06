@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Virtual environments
+venv/
+.env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Test/cache artifacts
+.pytest_cache/
+
+# Packaging/build
+*.egg-info/
+build/
+dist/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Data (if you ever download large files)
+data/cornell movie-dialogs corpus/
+data/*.zip
+data/*.tar.gz
+
+# System files
+.DS_Store
+Thumbs.db

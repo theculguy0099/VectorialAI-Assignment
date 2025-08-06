@@ -1,0 +1,16 @@
+# Core dependencies
+langchain
+langgraph
+fastapi
+uvicorn
+
+# Data analysis
+pandas
+scikit-learn
+nltk
+sentence-transformers
+tf-keras
+
+# LLM provider (example using OpenAI)
+openai
+python-dotenv

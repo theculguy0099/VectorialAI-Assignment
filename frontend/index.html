@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent Conversational AI v2.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .version-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 0;
+            height: 75vh;
+        }
+
+        .chat-section {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+
+        .assistant-message {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .agent-response {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        .agent-name {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+
+        .agent-style {
+            font-size: 0.8em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .agent-questions {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+
+        .question-title {
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 5px;
+        }
+
+        .collaboration-insights {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        .insights-title {
+            font-weight: bold;
+            color: #7b1fa2;
+            margin-bottom: 5px;
+        }
+
+        .collaboration-flow {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+
+        .flow-title {
+            font-weight: bold;
+            color: #388e3c;
+            margin-bottom: 5px;
+        }
+
+        .citations {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .message-input:focus {
+            border-color: #007bff;
+        }
+
+        .send-button {
+            padding: 15px 30px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .send-button:hover {
+            background: #0056b3;
+        }
+
+        .send-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 1px solid #e9ecef;
+            overflow-y: auto;
+        }
+
+        .agent-info {
+            margin-bottom: 20px;
+        }
+
+        .agent-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .agent-card h3 {
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .agent-card p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .strengths {
+            font-size: 0.8em;
+            color: #28a745;
+        }
+
+        .collaboration-style {
+            font-size: 0.8em;
+            color: #6f42c1;
+            margin-top: 5px;
+        }
+
+        .scenarios-section {
+            margin-top: 20px;
+        }
+
+        .scenario-card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .scenario-card:hover {
+            background: #e9ecef;
+        }
+
+        .scenario-title {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .scenario-desc {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #e9ecef;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Multi-Agent Conversational AI</h1>
+            <p>Watch three AI agents collaborate with advanced interaction patterns</p>
+            <div class="version-badge">v2.0 - Enhanced Collaboration</div>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-section">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message assistant-message">
+                        <strong>System:</strong> Welcome to the enhanced multi-agent system! Three agents with distinct collaboration styles will work together to answer your questions. Each agent can ask questions to others and build upon their insights.
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <input type="text" class="message-input" id="messageInput" placeholder="Ask a question to see advanced collaboration..." />
+                    <button class="send-button" id="sendButton" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('agents')">Agents</button>
+                    <button class="tab" onclick="showTab('scenarios')">Scenarios</button>
+                </div>
+
+                <div id="agents-tab" class="tab-content active">
+                    <h3>🤖 Agents</h3>
+                    <div class="agent-info" id="agentInfo">
+                        <div class="agent-card">
+                            <h3>🔍 Inquisitive Analyst</h3>
+                            <p>Asks questions, makes observations, and plans. Analytical and engaging.</p>
+                            <div class="strengths">Strengths: Pattern recognition, critical thinking, questioning</div>
+                            <div class="collaboration-style">Style: Analytical - seeks understanding through questions</div>
+                        </div>
+                        <div class="agent-card">
+                            <h3>⚡ Concise Responder</h3>
+                            <p>Short, reactive responses. Brief questions and affirmations.</p>
+                            <div class="strengths">Strengths: Quick responses, direct communication, efficiency</div>
+                            <div class="collaboration-style">Style: Reactive - provides immediate feedback</div>
+                        </div>
+                        <div class="agent-card">
+                            <h3>📖 Narrative Storyteller</h3>
+                            <p>Descriptive and expressive. Shares stories and detailed opinions.</p>
+                            <div class="strengths">Strengths: Storytelling, context building, emotional intelligence</div>
+                            <div class="collaboration-style">Style: Narrative - weaves perspectives into stories</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="scenarios-tab" class="tab-content">
+                    <h3>🎯 Collaboration Scenarios</h3>
+                    <div class="scenarios-section" id="scenariosSection">
+                        <!-- Scenarios will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let conversationId = 'default';
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function addMessage(content, role) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
+            messageDiv.textContent = content;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addAgentResponse(agentName, response, collaborationFlow) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const responseDiv = document.createElement('div');
+            
+            // Find the collaboration style from flow
+            const flowEntry = collaborationFlow.find(entry => entry.agent === agentName);
+            const style = flowEntry ? flowEntry.style : 'general';
+            
+            responseDiv.className = 'agent-response';
+            responseDiv.innerHTML = `
+                <div class="agent-name">${agentName.charAt(0).toUpperCase() + agentName.slice(1)}</div>
+                <div class="agent-style">Collaboration Style: ${style}</div>
+                <div>${response}</div>
+            `;
+            messagesDiv.appendChild(responseDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addAgentQuestions(agentQuestions) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const questionsDiv = document.createElement('div');
+            questionsDiv.className = 'agent-questions';
+            
+            let questionsHtml = '<div class="question-title">🤔 Agent Questions:</div>';
+            for (const [agent, questions] of Object.entries(agentQuestions)) {
+                for (const [targetAgent, question] of Object.entries(questions)) {
+                    questionsHtml += `<div><strong>${agent.charAt(0).toUpperCase() + agent.slice(1)}</strong> asks <strong>${targetAgent.charAt(0).toUpperCase() + targetAgent.slice(1)}</strong>: "${question}"</div>`;
+                }
+            }
+            
+            questionsDiv.innerHTML = questionsHtml;
+            messagesDiv.appendChild(questionsDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addCollaborationInsights(collaborationSummary) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const insightsDiv = document.createElement('div');
+            insightsDiv.className = 'collaboration-insights';
+            
+            let insightsHtml = '<div class="insights-title">🎯 Collaboration Insights:</div>';
+            for (const summary of collaborationSummary) {
+                insightsHtml += `<div>• <strong>${summary.agent.charAt(0).toUpperCase() + summary.agent.slice(1)}</strong> (${summary.style}): ${summary.contribution.substring(0, 100)}...</div>`;
+            }
+            
+            insightsDiv.innerHTML = insightsHtml;
+            messagesDiv.appendChild(insightsDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addCollaborationFlow(collaborationFlow) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const flowDiv = document.createElement('div');
+            flowDiv.className = 'collaboration-flow';
+            
+            let flowHtml = '<div class="flow-title">🔄 Collaboration Flow:</div>';
+            for (const flow of collaborationFlow) {
+                flowHtml += `<div>• <strong>${flow.agent.charAt(0).toUpperCase() + flow.agent.slice(1)}</strong> (${flow.style}): ${flow.response.substring(0, 80)}...</div>`;
+            }
+            
+            flowDiv.innerHTML = flowHtml;
+            messagesDiv.appendChild(flowDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addCitations(citations) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const citationsDiv = document.createElement('div');
+            citationsDiv.className = 'citations';
+            citationsDiv.innerHTML = `
+                <strong>📚 Citations:</strong><br>
+                ${citations.map(citation => 
+                    `<div style="margin: 5px 0;">• ${citation.agent}: ${citation.context.substring(0, 100)}...</div>`
+                ).join('')}
+            `;
+            messagesDiv.appendChild(citationsDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addError(message) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            messagesDiv.appendChild(errorDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addModerator(moderator) {
+            if (!moderator) return;
+            const messagesDiv = document.getElementById('chatMessages');
+            const modDiv = document.createElement('div');
+            modDiv.className = 'agent-response';
+            modDiv.innerHTML = `
+                <div class="agent-name">🧑‍⚖️ Moderator</div>
+                <div><strong>Summary:</strong> ${moderator.summary}</div>
+                <div style="font-size:0.9em; color:#888; margin-top:5px;">
+                    <strong>Agents Reviewed:</strong><br>${moderator.agents_reviewed.join('<br>')}
+                </div>
+            `;
+            messagesDiv.appendChild(modDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        function addSharedMemory(sharedMemory) {
+            if (!sharedMemory || Object.keys(sharedMemory).length === 0) return;
+            const messagesDiv = document.getElementById('chatMessages');
+            const memDiv = document.createElement('div');
+            memDiv.className = 'collaboration-flow';
+            let memHtml = '<div class="flow-title">🧠 Shared Memory:</div>';
+            for (const [k, v] of Object.entries(sharedMemory)) {
+                memHtml += `<div>• <strong>${k}</strong>: ${v.content} <span style="color:#888;">(by ${v.agent})</span></div>`;
+            }
+            memDiv.innerHTML = memHtml;
+            messagesDiv.appendChild(memDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const button = document.getElementById('sendButton');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Disable input and button
+            input.disabled = true;
+            button.disabled = true;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.innerHTML = `
+                <div class="spinner"></div>
+                <p>Agents are collaborating with advanced features...</p>
+            `;
+            document.getElementById('chatMessages').appendChild(loadingDiv);
+
+            try {
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        conversation_id: conversationId,
+                        collaboration_mode: "enhanced"
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Remove loading
+                loadingDiv.remove();
+
+                // Add assistant response
+                addMessage(data.response, 'assistant');
+
+                // Add individual agent responses with enhanced details
+                for (const [agentName, agentResponse] of Object.entries(data.agent_responses)) {
+                    if (agentResponse) {
+                        addAgentResponse(agentName, agentResponse, data.collaboration_flow);
+                    }
+                }
+
+                // Add agent questions
+                if (data.agent_questions) {
+                    addAgentQuestions(data.agent_questions);
+                }
+
+                // Add collaboration insights
+                if (data.collaboration_summary && data.collaboration_summary.length > 0) {
+                    addCollaborationInsights(data.collaboration_summary);
+                }
+
+                // Add collaboration flow
+                if (data.collaboration_flow && data.collaboration_flow.length > 0) {
+                    addCollaborationFlow(data.collaboration_flow);
+                }
+
+                // Add citations if any
+                if (data.citations && data.citations.length > 0) {
+                    addCitations(data.citations);
+                }
+
+                // Add shared memory
+                if (data.shared_memory) {
+                    addSharedMemory(data.shared_memory);
+                }
+                // Add moderator output
+                if (data.moderator) {
+                    addModerator(data.moderator);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                loadingDiv.remove();
+                addError('Sorry, there was an error processing your request. Please try again.');
+            } finally {
+                // Re-enable input and button
+                input.disabled = false;
+                button.disabled = false;
+                input.focus();
+            }
+        }
+
+        async function loadScenarios() {
+            try {
+                const response = await fetch(`${API_BASE}/collaboration-scenarios`);
+                if (response.ok) {
+                    const scenarios = await response.json();
+                    const scenariosSection = document.getElementById('scenariosSection');
+                    
+                    scenarios.forEach(scenario => {
+                        const scenarioDiv = document.createElement('div');
+                        scenarioDiv.className = 'scenario-card';
+                        scenarioDiv.onclick = () => {
+                            document.getElementById('messageInput').value = scenario.query;
+                        };
+                        scenarioDiv.innerHTML = `
+                            <div class="scenario-title">${scenario.name}</div>
+                            <div class="scenario-desc">${scenario.description}</div>
+                            <div class="scenario-desc"><strong>Expected:</strong> ${scenario.expected_collaboration}</div>
+                        `;
+                        scenariosSection.appendChild(scenarioDiv);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading scenarios:', error);
+            }
+        }
+
+        // Allow Enter key to send message
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Load scenarios on page load
+        loadScenarios();
+    </script>
+</body>
+</html> 
